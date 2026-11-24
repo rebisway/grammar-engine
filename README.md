@@ -20,6 +20,15 @@ for issue in checker.check('Les chat dorment sur le canapé.', ui='en'):
 - **A lexicon, not code, for morphology.** The rules ask the lexicon for the corrected form; there are no conjugation tables in the rules.
 - **Every host.** Import it from Python, run `python -m grammar_engine` from a script, keep `python -m grammar_engine --serve` alive from any language (JSON, one line per request), or embed Python and call `grammar_engine.bridge`.
 
+## Install
+
+Get the code, then the lexicons (`fr.lex`, `en.lex`, `es.lex`), which are not in the repository:
+
+1. **Download them from the latest release** and put them in `grammar_engine/data/`.
+2. **Or build them:** `python tools/build_lexicons.py fr` (a few MB download), `python tools/build_lexicons.py en es` (several GB streamed from kaikki.org, one hour or more), or `all`. Details in [docs/BUILDING_LEXICONS.md](docs/BUILDING_LEXICONS.md).
+
+Without its lexicon a language still loads but reports almost nothing. Nothing else to install: Python 3.9 or later, standard library only.
+
 ## Use
 
 **Python**
