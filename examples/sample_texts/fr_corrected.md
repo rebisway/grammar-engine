@@ -1,0 +1,29 @@
+# Texte d'essai : le même texte corrigé
+
+## Accords du groupe nominal
+
+Les enfants jouent dans le jardin. Les pommes sont mûres. Une grande maison se dresse au bout du chemin. De petits chemins mènent à la rivière. La voiture est garée devant la porte. Chaque jour, le facteur passe à midi. Mon amie habite à côté. Tous les matins, elle ouvre la fenêtre. Elle a des cheveux noirs et une robe bleu ciel.
+
+## Accords du verbe
+
+Les chats dorment sur le lit. Tu manges trop vite. Nous mangeons à midi. Elle est grande pour son âge. Les filles sont contentes de partir. J'ai faim depuis ce matin. C'est moi qui ai préparé le dîner. La plupart des gens sont déjà partis. Quelques personnes sont arrivées en retard. Il y a deux cents personnes dans la salle.
+
+## Participes passés
+
+Elle est partie hier soir. Nous sommes arrivés tard. Elle s'est lavée hier. Les pommes que j'ai mangées étaient bonnes. Je les ai mangés hier. Elle a mangé la tarte. Il a mangé toute la tarte. Il faut manger avant de partir.
+
+## Homophones
+
+Il se lave les mains. Il va à la plage chaque été. Le village où il habite est calme. Leurs amis sont arrivés. Il s'est trompé de route. Il est parti sans rien dire. Il peut venir demain. Il m'a dit que ça va mieux. Il a froid. Ils ont peur et ils sont partis.
+
+## Temps et modes
+
+Si j'avais su, je serais venu. Il faut que tu viennes demain. Bien qu'il ait mangé, il a encore faim. Après qu'il est parti, la maison est restée vide. Je ne sais pas si tu viendras.
+
+## Prépositions et expressions
+
+Il essaie de comprendre la règle. Il apprend à lire en classe. Ils vont pallier la pénurie. Ce plan est différent du premier. Bien que tu viennes, il reste fâché. Au-dessus de la table, une lampe brille.
+
+## Élisions, répétitions et majuscules
+
+S'il pleut, nous resterons à la maison. Je pense qu'il viendra. J'ai faim depuis ce matin. Le chat et le chien dorment. Il dort. Le soleil se lève.

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grammar page</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+  #bar { padding: 8px; display: flex; gap: 8px; align-items: center; background: #eee; }
+  #text { flex: 1; font-size: 15px; padding: 8px; resize: none; border: 0; border-bottom: 1px solid #ccc; }
+  #list { flex: 1; overflow: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid #ddd; }
+  tr.row { cursor: pointer; }
+  tr.row:hover, tr.row.selected { background: #fff2c2; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <input type="file" id="file" accept=".txt,.md">
+  <label>Text language <select id="language"><option>fr</option><option>en</option><option>es</option><option>es-AR</option></select></label>
+  <label>Messages <select id="ui"><option>en</option><option>fr</option><option>es</option></select></label>
+  <button id="check">Check</button>
+  <span id="status">Open a file or paste a text, then press Check.</span>
+</div>
+<textarea id="text" spellcheck="false"></textarea>
+<div id="list">
+  <table>
+    <thead><tr><th>Line</th><th>Text</th><th>Suggestion</th><th>Message</th><th>Rule</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+<script>
+'use strict';
+
+const $ = (id) => document.getElementById(id);
+let problems = [];
+
+// The engine counts in Unicode code points; the textarea counts in UTF-16 units (an emoji is two of them).
+// This converts a position in code points to a position in the string.
+function utf16Index(text, codePoints) {
+  let index = 0;
+  for (let n = 0; n < codePoints && index < text.length; n++) {
+    const code = text.charCodeAt(index);
+    index += code >= 0xD800 && code < 0xDC00 ? 2 : 1;      // a high surrogate starts a pair
+  }
+  return index;
+}
+
+// Puts a text in the editor, and picks the language from the name of the sample (fr, en, es).
+function setText(text, language) {
+  $('text').value = text.replace(/\r\n/g, '\n').replace(/\n+$/, '');
+  if (language) $('language').value = language;
+  check();
+}
+
+// A page opened from the disk (file://) cannot reach the server: say what to do instead of a network error.
+const FROM_DISK = location.protocol === 'file:';
+const NEEDS_SERVER = 'This page needs its server. Run "python server.py" (or "node server.js") in this folder, then open http://localhost:8089/ ';
+
+async function check() {
+  if (FROM_DISK) {
+    $('status').textContent = NEEDS_SERVER;
+    return;
+  }
+  $('check').disabled = true;
+  $('status').textContent = 'Checking...';
+  try {
+    // The page never talks to the engine directly: it posts to server.js, which owns the process.
+    const response = await fetch('/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: $('language').value, ui: $('ui').value, text: $('text').value }),
+    });
+    const answer = await response.json();
+    if (answer.error) throw new Error(answer.error);
+    problems = answer.issues;
+    const rows = $('rows');
+    rows.textContent = '';
+    problems.forEach((p, k) => {
+      const row = rows.insertRow();
+      row.className = 'row';
+      // textContent, never innerHTML: the text and the messages come from outside and must not be read as HTML
+      [p.paragraph + 1, p.text, p.suggestions.length ? p.suggestions[0] : '(delete)', p.message, p.rule].forEach((value) => {
+        row.insertCell().textContent = value;
+      });
+      row.addEventListener('click', () => select(k, row));
+    });
+    $('status').textContent = problems.length ? problems.length + ' problem(s).' : 'No problem found.';
+  } catch (e) {
+    $('status').textContent = 'Error: ' + e.message;       // server not running, Python missing, engine stopped...
+  } finally {
+    $('check').disabled = false;
+  }
+}
+
+// A click on a problem selects its passage in the text. start and end are code points in the whole text.
+function select(k, row) {
+  document.querySelectorAll('tr.selected').forEach((r) => r.classList.remove('selected'));
+  row.classList.add('selected');
+  const area = $('text');
+  const text = area.value;
+  area.focus();                                            // a selection only shows in the focused field
+  area.setSelectionRange(utf16Index(text, problems[k].start), utf16Index(text, problems[k].end));
+}
+
+$('check').addEventListener('click', check);
+$('file').addEventListener('change', async (event) => {    // a local file is read in the browser, nothing is uploaded but the text to check
+  const file = event.target.files[0];
+  if (!file) return;
+  const stem = file.name.replace(/\.[^.]*$/, '');
+  setText(await file.text(), ['fr', 'en', 'es'].includes(stem) ? stem : null);
+});
+
+if (FROM_DISK) $('status').textContent = NEEDS_SERVER;
+else fetch('/sample/fr').then((r) => r.text()).then((t) => setText(t, 'fr'));
+</script>
+</body>
+</html>
